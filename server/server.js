@@ -18,11 +18,9 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(morgan('dev'));
 app.use(cors());
 
-app.get('/', (req,res,next) => {
-    res.json({
-        'name': 'Nihar'
-    });
-}); 
+const userRoutes = require('./routes/account');
+app.use('/api/accounts', userRoutes);
+
 app.listen(config.port,(err) => {
     console.log('Listening in port '+ config.port);
 });
