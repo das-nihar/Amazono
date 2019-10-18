@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const config = require('../config')
 const User = require('../models/users');
 
-router.post('/signup', (req, res, next) => {
+router.post('/signUp', (req, res, next) => {
     let user = new User();
     user.name = req.body.name;
     user.email = req.body.email;
@@ -33,6 +33,48 @@ User.findOne({email: req.body.email}, (err, existingUser) => { // findOne is a m
         });
     }
 });
+});
+
+router.post('/signIn',(req,res,next) => {
+
+
+
+    User.findOne({email:req.body.email}, (err, user) => {
+     
+        if(err) {
+            throw err;
+        }
+        if (!user) {
+            res.json({
+                success: false,
+                message: 'Authentication failed, User not found'
+            });
+        } else if (user) {
+            console.log(req.body.password);
+            
+            var validPassword = user.comparePassword(req.body.password);
+            if(!validPassword) {
+                res.json({
+                    success: false,
+                    message: 'Authentication failed, wrong password'
+                });
+            } else {
+                var token = jwt.sign(
+                   {
+                    user: user
+                   },
+                    config.secret,
+                   {
+                    expiresIn: '7d'
+                   });
+                res.json({
+                    success: true,
+                    messase: 'Enjoy your token',
+                    token: token
+                });
+            }
+        }
+    });
 });
 
 module.exports = router;
