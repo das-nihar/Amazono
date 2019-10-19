@@ -19,7 +19,7 @@ export class DataService {
     });
    }
 
-   succss(message) {
+   success(message) {
      this.messageType = 'success';
      this.message = message;
    }
@@ -33,3 +33,4 @@ export class DataService {
      this.messageType = 'warning';
      this.message = message;
    }
+  }
