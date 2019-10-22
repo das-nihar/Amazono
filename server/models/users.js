@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
-const bcrypt = require("bcrypt-nodejs");
+const bcrypt = require("bcrypt-nodejs"); // It encrypts any string
 const crypto = require("crypto");
-const Schema = mongoose.Schema;
+const Schema = mongoose.Schema; // It is an object to create user blueprint
 
 const userSchema = new Schema ({
     email: {type: String, unique: true, lowercase: true},
@@ -20,18 +20,18 @@ const userSchema = new Schema ({
     created: {type: Date, default: Date.now}
 });
 
-userSchema.pre('save',function(next){
+userSchema.pre('save',function(next){ // pre() here will encrypt the password before saving
     var user = this;
     if(!user.isModified('password')) return next();
-    bcrypt.hash(user.password, null, null, function(err, hash) {
+    bcrypt.hash(user.password, null, null, function(err, hash) { // function to encrypt the password
      if(err) return next(err);
      user.password = hash;
      return next();
     });
 });
 
-userSchema.methods.comparePassword = function(password) {
-    return bcrypt.compareSync(password,this.password);
+userSchema.methods.comparePassword = function(password) { // creating a custom method to compare passwords
+    return bcrypt.compareSync(password,this.password); // it compares the password you typed in to the password in db
 }
 
 userSchema.methods.gravatar = function(size) {
